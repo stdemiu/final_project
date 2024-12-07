@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Assignments</h1>
+<div class="row">
+    {% for assignment in assignments %}
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ assignment.title }}</h5>
+                <p class="card-text">{{ assignment.description }}</p>
+                <p class="text-muted">Due Date: {{ assignment.due_date }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No assignments available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

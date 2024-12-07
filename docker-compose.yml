@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  db:  # Настройка базы данных
+    image: mysql:8.0  # Используем образ MySQL
+    container_name: it_school_db  # Название контейнера
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Пароль администратора MySQL
+      MYSQL_DATABASE: it_school  # Имя базы данных
+      MYSQL_USER: user  # Пользователь базы данных
+      MYSQL_PASSWORD: password  # Пароль пользователя
+    ports:
+      - "3306:3306"  # Пробрасываем порт для локального доступа
+    volumes:
+      - db_data:/var/lib/mysql  # Сохраняем данные в volume
+
+  web:  # Настройка Django-приложения
+    build:
+      context: .  # Указываем текущую папку для сборки
+      dockerfile: Dockerfile  # Используем наш Dockerfile
+    container_name: it_school_web  # Название контейнера
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app  # Пробрасываем код проекта в контейнер
+    ports:
+      - "8000:8000"  # Пробрасываем порт для веб-доступа
+    depends_on:
+      - db  # Зависимость от базы данных
+    environment:
+      - DJANGO_DB_NAME=it_school_db
+      - DJANGO_DB_USER=root
+      - DJANGO_DB_PASSWORD=
+      - DJANGO_DB_HOST=db  # Имя сервиса базы данных в Compose
+      - DJANGO_DB_PORT=3306
+
+volumes:
+  db_data:  # Определяем volume для хранения данных базы данных

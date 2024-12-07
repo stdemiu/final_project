@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ course.name }}</h1>
+    <p><strong>Направление:</strong> {{ course.direction }}</p>
+    <p>{{ course.description }}</p>
+
+    {% if user.is_authenticated %}
+        {% if course.students.filter(id=user.id).exists %}
+            <button class="btn btn-success" disabled>Вы записаны</button>
+        {% else %}
+            <form action="{% url 'enroll' course.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Записаться</button>
+                <button type="submit" class="btn btn-danger">Отчислиться</button>
+            </form>
+
+            
+        {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-secondary">Войти, чтобы записаться</a>
+    {% endif %}
+</div>
+{% endblock %}
