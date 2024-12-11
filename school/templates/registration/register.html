@@ -1,14 +1,125 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa; /* Цвет фона из текущего примера */
+            font-family: 'Arial', sans-serif;
+        }
 
-{% block title %}Регистрация{% endblock %}
+        .wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
 
-{% block content %}
-<div class="container mt-5">
-    <h2>Регистрация</h2>
-    <form method="post" novalidate>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-    </form>
-</div>
-{% endblock %}
+        .card {
+            background: #ffffff;
+            color: #333;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .input-group-text {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .text-primary {
+            color: #007bff !important;
+        }
+
+        a.text-primary:hover {
+            color: #0056b3 !important;
+        }
+
+        .btn-secondary {
+            border: none;
+        }
+
+        .rules {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card p-4 shadow-lg" style="width: 400px;">
+            <h2 class="text-center mb-4 text-primary">Регистрация</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Логин</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        {{ form.username }}
+                    </div>
+                    <div class="error">{{ form.username.errors }}</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password1" class="form-label">Пароль</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        {{ form.password1 }}
+                    </div>
+                    <div class="error">{{ form.password1.errors }}</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password2" class="form-label">Повторите пароль</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        {{ form.password2 }}
+                    </div>
+                    <div class="error">{{ form.password2.errors }}</div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-3">Зарегистрироваться</button>
+            </form>
+            <hr>
+            <p class="text-muted rules">
+                <strong>Правила регистрации:</strong>
+                <ul>
+                    <li>Логин должен содержать только буквы и цифры, длина от 5 до 20 символов.</li>
+                    <li>Пароль должен быть длиной не менее 8 символов, содержать заглавные и строчные буквы, цифры.</li>
+                    <li>Пароли должны совпадать.</li>
+                </ul>
+            </p>
+            <p class="text-center mt-3 text-muted">
+                Уже есть аккаунт? <a href="{% url 'login' %}" class="text-primary">Войти</a>
+            </p>
+            <div class="text-center mt-3">
+                <a href="/" class="btn btn-secondary">На главную</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+</body>
+</html>

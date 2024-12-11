@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-primary text-center">Профиль пользователя</h1>
+    <hr class="mb-4">
+
+    <!-- Личная информация -->
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="text-secondary mb-3">Личная информация</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="edit_profile" value="1">
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Сохранить изменения</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

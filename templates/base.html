@@ -18,7 +18,15 @@
             flex-direction: column;
         }
         footer {
-            margin-top: auto; /* Футер всегда внизу */
+            margin-top: auto; 
+        }
+      
+        .btn {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
@@ -37,17 +45,20 @@
                         <li class="nav-item"><a class="nav-link" href="/courses/">Курсы</a></li>
                         {% if user.is_authenticated %}
                             <li class="nav-item"><a class="nav-link" href="/profile/">Профиль</a></li>
-                            <li class="nav-item">
-                                <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-link nav-link">Выйти</button>
-                                </form>
-                            </li>
+                            {% if user.is_staff %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'edit_users' %}">Управление пользователями</a></li>
+                            {% endif %}
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Войти</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Регистрация</a></li>
                         {% endif %}
                     </ul>
+                    {% if user.is_authenticated %}
+                        <form class="ms-auto" action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link text-white">Выйти</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -65,5 +76,32 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const courseModal = document.getElementById('courseModal');
+            courseModal?.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+
+             
+                const name = button.getAttribute('data-name');
+                const direction = button.getAttribute('data-direction');
+                const price = button.getAttribute('data-price');
+                const date = button.getAttribute('data-date');
+                const teacher = button.getAttribute('data-teacher');
+                const format = button.getAttribute('data-format');
+                const details = button.getAttribute('data-details');
+
+            
+                document.getElementById('courseModalLabel').textContent = name;
+                document.getElementById('modalCourseName').textContent = name;
+                document.getElementById('modalCourseDirection').textContent = direction;
+                document.getElementById('modalCoursePrice').textContent = price;
+                document.getElementById('modalCourseDate').textContent = date || 'Не указана';
+                document.getElementById('modalCourseTeacher').textContent = teacher || 'Не указан';
+                document.getElementById('modalCourseFormat').textContent = format || 'Не указан';
+                document.getElementById('modalCourseDetails').innerHTML = details || 'Подробная информация отсутствует.';
+            });
+        });
+    </script>
 </body>
 </html>

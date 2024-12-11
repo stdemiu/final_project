@@ -10,6 +10,8 @@ def home(request):
 
 urlpatterns = [
     path('', home, name='home'),  # Главная страница
+    path('admin/edit-users/', views.edit_users, name='edit_users'),
+    path('admin/remove-enrollment/<int:user_id>/<int:course_id>/', views.remove_enrollment, name='remove_enrollment'),
     path('admin/', admin.site.urls),  # Админка
     path('api-auth/', include('rest_framework.urls')),  # Включение DRF панели аутентификации
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

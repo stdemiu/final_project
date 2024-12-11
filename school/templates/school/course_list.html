@@ -1,30 +1,105 @@
 {% extends "base.html" %}
 
-{% block title %}Courses{% endblock %}
+{% block title %}Курсы{% endblock %}
 
 {% block content %}
-<h1>Список курсов</h1>
+<h1 class="text-center my-4">Список курсов</h1>
 <div class="container">
-    <ul class="list-group">
+    <!-- Форма поиска, фильтра и сортировки -->
+    <form method="get" class="mb-4">
+        <div class="row">
+            <!-- Поиск по названию -->
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Поиск по названию"
+                       value="{{ request.GET.search }}">
+            </div>
+            <!-- Фильтр по направлению -->
+            <div class="col-md-4">
+                <select name="direction" class="form-select">
+                    <option value="">Все направления</option>
+                    {% for direction in directions %}
+                        <option value="{{ direction }}" {% if request.GET.direction == direction %}selected{% endif %}>
+                            {{ direction }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Сортировка по цене -->
+            <div class="col-md-4">
+                <select name="sort" class="form-select">
+                    <option value="">Сортировка по умолчанию</option>
+                    <option value="price_asc" {% if request.GET.sort == "price_asc" %}selected{% endif %}>
+                        Цена (по возрастанию)
+                    </option>
+                    <option value="price_desc" {% if request.GET.sort == "price_desc" %}selected{% endif %}>
+                        Цена (по убыванию)
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-3 text-end">
+            <button type="submit" class="btn btn-primary">Применить</button>
+            <a href="{% url 'course_list' %}" class="btn btn-secondary">Сбросить</a>
+        </div>
+    </form>
+
+    <div class="row">
         {% for course in courses %}
-        <li class="list-group-item">
-            <h3>{{ course.name }}</h3>
-            <p>{{ course.description }}</p>
-            <p><strong>Направление:</strong> {{ course.direction }}</p>
-            {% if user.is_authenticated %}
-                {% if course.id in user_enrollments %}
-                    <button class="btn btn-success" disabled>Вы записаны</button>
-                {% else %}
-                    <form action="{% url 'enroll' course.id %}" method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">Записаться</button>
-                    </form>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-secondary">Войти, чтобы записаться</a>
-            {% endif %}
-        </li>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.name }}</h5>
+                    <p class="text-muted"><strong>Направление:</strong> {{ course.direction }}</p>
+                    <p class="text-muted"><strong>Цена:</strong> {{ course.price }} KZT</p>
+                    <button 
+                        class="btn btn-info w-100 mt-3" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#courseModal"
+                        data-name="{{ course.name }}"
+                        data-direction="{{ course.direction }}"
+                        data-price="{{ course.price }} KZT"
+                        data-date="{{ course.date }}"
+                        data-teacher="{{ course.teacher }}"
+                        data-format="{{ course.format }}"
+                        data-details="{{ course.details|safe }}">
+                        Подробнее
+                    </button>
+                    {% if course.id in user_enrollments %}
+                        <button class="btn btn-success w-100 mt-2" disabled>Вы записаны</button>
+                    {% else %}
+                        <form action="{% url 'enroll' course.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary w-100 mt-2">Записаться</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="courseModalLabel">Подробности курса</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 id="modalCourseName"></h5>
+                <p><strong>Направление:</strong> <span id="modalCourseDirection"></span></p>
+                <p><strong>Цена:</strong> <span id="modalCoursePrice"></span></p>
+                <p><strong>Дата начала:</strong> <span id="modalCourseDate"></span></p>
+                <p><strong>Преподаватель:</strong> <span id="modalCourseTeacher"></span></p>
+                <p><strong>Формат:</strong> <span id="modalCourseFormat"></span></p>
+                <p id="modalCourseDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

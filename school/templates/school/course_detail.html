@@ -3,25 +3,17 @@
 {% block title %}{{ course.name }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>{{ course.name }}</h1>
+<div class="container mt-5">
+    <h1 class="text-center">{{ course.name }}</h1>
     <p><strong>Направление:</strong> {{ course.direction }}</p>
-    <p>{{ course.description }}</p>
-
-    {% if user.is_authenticated %}
-        {% if course.students.filter(id=user.id).exists %}
-            <button class="btn btn-success" disabled>Вы записаны</button>
-        {% else %}
-            <form action="{% url 'enroll' course.id %}" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Записаться</button>
-                <button type="submit" class="btn btn-danger">Отчислиться</button>
-            </form>
-
-            
-        {% endif %}
-    {% else %}
-        <a href="{% url 'login' %}" class="btn btn-secondary">Войти, чтобы записаться</a>
-    {% endif %}
+    <p><strong>Преподаватель:</strong> {{ course.teacher }}</p>
+    <p><strong>Дата:</strong> {{ course.date }}</p>
+    <p><strong>Формат:</strong> {{ course.format }}</p>
+    <p><strong>Цена:</strong> {{ course.price }} KZT</p>
+    <div class="mt-4">
+        <h4>Подробная информация:</h4>
+        <p>{{ course.details }}</p>
+    </div>
+    <a href="{% url 'course_list' %}" class="btn btn-secondary mt-3">Назад к курсам</a>
 </div>
 {% endblock %}
